@@ -42,9 +42,10 @@ function loadChromium() {
   candidates.push(path.join(repoRoot, 'web/node_modules/playwright'));
   candidates.push(path.join(repoRoot, 'web/node_modules/playwright-core'));
   for (const candidate of candidates) {
-    if (!existsSync(path.join(candidate, 'package.json'))) continue;
-    const require = createRequire(path.join(candidate, 'package.json'));
-    const loaded = require(candidate);
+    const resolved = path.resolve(candidate);
+    if (!existsSync(path.join(resolved, 'package.json'))) continue;
+    const require = createRequire(path.join(resolved, 'package.json'));
+    const loaded = require(resolved);
     if (loaded?.chromium) return loaded.chromium;
   }
   fail(

@@ -8,7 +8,7 @@ Per-owner CPU, RAM, GPU, and storage telemetry, plus workspace assignments. With
 - Fixture state: `data-testid="workload-inventory-state"` with `Workspace inventory is unavailable.`
 - Configured owners: `data-testid="people-view"`, a `Users` tablist (desktop) or `Select user` (narrow), owner tabs, and the workload charts for the selected owner.
 - Unconfigured attribution, with no workload telemetry object at all: `data-testid="people-attribution-unconfigured"` and heading `Workspace attribution is not configured`.
-- Degraded attribution: `data-testid="people-attribution-state"` or `people-attribution-empty`, and `Workspace diagnostics` when workspace diagnostics exist.
+- Attribution present but not `available`, and no people: `data-testid="people-attribution-state"` (`Workspace assignments are {status}.`). `people-attribution-empty` is the leftover zero-people panel (`No workspaces reported.`), not that degraded state. `Workspace diagnostics` appears when workspace diagnostics exist.
 
 ## How to get to it (user POV)
 
@@ -19,7 +19,7 @@ Activate `Workloads` in `Workbench views`, or open `#workloads`. The page headin
 Use a fresh 1280×900 context on the verification `BASE_URL`.
 
 1. `page.goto(BASE_URL + '/#workloads')`.
-2. Wait for heading `Workloads` (level 1), heading `Workspaces`, and status `Connection status: Live`.
+2. Wait for heading `Workloads` (level 1), heading `Workspaces`, and status `Connection status: Degraded`.
 3. On the blackwell fixture launch, wait for `workload-inventory-state` and the text `Workspace inventory is unavailable.` Screenshot the view.
 4. Confirm `GET /api/v1/snapshot` has `attribution.status` `available` with empty `workloads` and `assignments`, and `workloadTelemetry.status` `unavailable`. That pair is why the inventory panel renders instead of an owner list. Save both objects in the evidence JSON.
 5. Stop there for this launch. There is no user tab to select.

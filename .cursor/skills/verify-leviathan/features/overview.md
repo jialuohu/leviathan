@@ -5,7 +5,7 @@ Default workbench view. Shows whether the host is measurable: CPU, RAM, GPU assi
 ## Sub-features
 
 - Host capacity cards: `Inspect CPU resources`, `Inspect RAM resources`, `Inspect GPU resources`, `Inspect Storage resources` inside the `Host capacity` region. A card click opens Resources and focuses that category.
-- Activity charts under the `Activity` heading: `host-cpu-chart`, `host-ram-chart`, `utilization-chart` (GPU compute), the GPU memory chart, and `host-storage-chart`. The storage panel's `Storage chart metric` radios switch `I/O` and `Space`.
+- Activity charts under the `Activity` heading, in order: `host-cpu-chart`, `host-ram-chart`, `gpu-activity-chart`, `utilization-chart` (GPU compute), `memory-chart` (GPU memory), `temperature-chart`, `pcie-throughput-chart`, `memory-activity-chart`, and `host-storage-chart`. The GPU charts render only when the snapshot has at least one GPU. The storage panel's `Storage chart metric` radios switch `I/O` and `Space`.
 - `Chart window` radios `5m`, `15m`, `30m`, `1h`, `4h`, `12h`. The choice is saved in `localStorage['leviathan.chartWindow.v1']` and reloads aligned history.
 - Header connection status, view-update cadence, and theme. Cadence and theme stay in this browser.
 

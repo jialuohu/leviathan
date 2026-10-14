@@ -18,9 +18,9 @@ Activate `Status` in `Workbench views`, or open `#status`. The page heading is `
 Use a fresh 1280×900 context on the verification `BASE_URL`.
 
 1. `page.goto(BASE_URL + '/#status')`.
-2. Wait for heading `Status` (level 1) and status `Connection status: Live`.
+2. Wait for heading `Status` (level 1) and status `Connection status: Degraded`.
 3. Wait for heading `Current status`. On the blackwell fixture:
-   - `.health-state` has `data-state="operational"` and text `Operational` once `GET /api/v1/status` has returned. `No data` after the request completes is a failure. The header can still say `Degraded` because of `plugin_stale`; that warning does not change these health components.
+   - The current-status `.health-state` has `data-state="operational"` and text `Operational` once `GET /api/v1/status` has returned. `No data` on that row after the request completes is a failure. The Yggdrasil row is a different `.health-state`: `data-state="unknown"` and text `No data`. The header stays `Degraded` because of `plugin_stale`; that warning does not change the host or GPU health components.
    - `Host uptime` is `—`. The fixture snapshot does not carry a host uptime sample.
    - `Monitor runtime` matches a short duration such as `0m` (minutes of this process). A dash here means the status report never arrived.
 4. `Diagnostic details` contains `Source observation is unavailable or stale` for the `hardware` plugin. `No active diagnostics.` means this fixture journey failed.
