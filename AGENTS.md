@@ -38,3 +38,12 @@ host-identity, path-integrity, and rollback behavior when changing installation.
 
 The active change specification is under `openspec/changes/environment-plugins`.
 Archived specifications are historical records; current procedures live in `docs/`.
+
+## Cloud Agent
+
+Go 1.27.1 and Node.js 24 are on the default PATH. The process started on boot
+serves the dashboard at http://127.0.0.1:1397 with
+`--provider fake --fixture blackwell`. That fixture supplies the GPU boards and
+the CPU, RAM, and storage samples, using this machine's hostname. Rebuild with
+`make build` and run `bin/leviathan serve` when the check needs the live host.
+`make check` and `make test` are the ordinary validation commands.
