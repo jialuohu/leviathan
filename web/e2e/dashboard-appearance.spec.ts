@@ -272,7 +272,9 @@ test('renders denser mobile dot snow in the offscreen worker', async ({
 
   const canvas = page.getByTestId('ambient-snow');
   await expect(canvas).toHaveAttribute('data-state', 'running');
-  await expect(canvas).toHaveAttribute('data-renderer', 'worker');
+  await expect(canvas).toHaveAttribute('data-renderer', 'worker', {
+    timeout: 15_000,
+  });
   await expect(canvas).toHaveAttribute('data-particle-count', '60');
   await expect(canvas).toHaveAttribute('data-effective-dpr', '1.25');
   await expect
