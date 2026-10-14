@@ -20,11 +20,11 @@ Use a fresh 1280×900 context on the verification `BASE_URL`.
 1. `page.goto(BASE_URL + '/#status')`.
 2. Wait for heading `Status` (level 1) and status `Connection status: Live`.
 3. Wait for heading `Current status`. On the blackwell fixture:
-   - `.health-state` has `data-state="operational"` and text `Operational` once `GET /api/v1/status` has returned. `No data` after the request completes is a failure.
+   - `.health-state` has `data-state="operational"` and text `Operational` once `GET /api/v1/status` has returned. `No data` after the request completes is a failure. The header can still say `Degraded` because of `plugin_stale`; that warning does not change these health components.
    - `Host uptime` is `—`. The fixture snapshot does not carry a host uptime sample.
    - `Monitor runtime` matches a short duration such as `0m` (minutes of this process). A dash here means the status report never arrived.
-4. `Diagnostic details` contains `No active diagnostics.`
-5. `Plugins` contains `No plugins configured.` Click `Refresh plugins` and confirm another `GET /api/v1/plugins` returns HTTP 200 with `"plugins":[]`.
+4. `Diagnostic details` contains `Source observation is unavailable or stale` for the `hardware` plugin. `No active diagnostics.` means this fixture journey failed.
+5. `Plugins` lists `hardware` with implementation `fake` and status `degraded`. The `workload-measurements` row is `unavailable`. Click `Refresh plugins` and confirm another `GET /api/v1/plugins` returns HTTP 200 and the same `hardware` id. `No plugins configured.` means this fixture journey failed.
 6. Read `GET /api/v1/status`. `persistence.enabled` is false. Screenshot the view and save the status JSON beside it.
 7. The run's `XDG_STATE_HOME` is still empty after the page has loaded. Opening Status must not start health persistence.
 
@@ -33,4 +33,4 @@ Use a fresh 1280×900 context on the verification `BASE_URL`.
 - Fixture and `--provider fake` disable 90-day health persistence in the server. Unknown history cells and `persistence.enabled: false` are the expected end state. Do not turn persistence on to make the grid look healthy, and do not treat unknown days as a failed health check.
 - Host uptime `—` is specific to this fixture. A `--provider auto` serve on a live Linux host should show a real uptime; that is a different launch, and a dash there fails that journey.
 - Yggdrasil is not configured, so the uplink row stays unknown (`Uploader is not configured.`). Unknown uplink does not by itself make `Current status` degraded. `Operational` here means host and GPU telemetry components are operational.
-- `No active diagnostics.` is the blackwell fixture result. If diagnostics render, copy them into the evidence and fail this fixture journey. Fix the cause or update this gotcha with the new expected diagnostic; do not delete the assertion.
+- The blackwell fixture's diagnostic is `plugin_stale` on `hardware` (`Source observation is unavailable or stale`), caused by the unavailable `workload-measurements` observation. If that row disappears, record the new diagnostics and update this journey. Do not accept an empty list and the current warning as the same success.

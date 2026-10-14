@@ -32,7 +32,7 @@ ensure_binary() {
     return
   fi
   echo "building $BIN" >&2
-  make -C "$REPO_ROOT" build-leviathan
+  make -C "$REPO_ROOT" build-leviathan >&2
   if [[ ! -x "$BIN" ]]; then
     echo "make build-leviathan did not produce $BIN" >&2
     exit 1
@@ -268,7 +268,15 @@ EOF
     kill_pid "$pid"
     exit 1
   fi
-  cat "$run_dir/state.env"
+  # Keep HOME and the XDG paths in the state file only. Printing them would
+  # override the caller's environment when this stdout is eval'd.
+  printf '%s\n' \
+    "RUN_ID=$run_id" \
+    "BASE_URL=http://127.0.0.1:$port" \
+    "EVIDENCE_DIR=$EVIDENCE_ROOT/$run_id" \
+    "PID=$pid" \
+    "PORT=$port" \
+    "LOG=$log"
 }
 
 cmd_doctor() {

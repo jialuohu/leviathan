@@ -37,7 +37,7 @@ Ready means both of these, not merely an open socket:
 
 `/healthz` stays HTTP 503 with `"status":"unavailable"` until the first snapshot exists. `launch` waits up to 20 seconds, then runs Doctor. On failure it kills the process it started.
 
-Stdout is `KEY=value` lines: `RUN_ID`, `BASE_URL`, `EVIDENCE_DIR`, `PID`, `LOG`, and the isolated directories. `eval` loads them into the shell.
+Stdout is `KEY=value` lines for `RUN_ID`, `BASE_URL`, `EVIDENCE_DIR`, `PID`, `PORT`, and `LOG`. `eval` loads them into the shell. Isolated `HOME` and XDG paths stay in the run's `state.env` so they are not applied to the caller.
 
 ## Doctor
 
@@ -73,7 +73,7 @@ NODE_PATH=/tmp/leviathan-verify-tools/node_modules \
 
 For Resources, Workloads, and Status, follow the matching file under `features/`. Use the same browser launch and the same base URL. Do not point Playwright at `web/playwright.config.ts`.
 
-Stable handles are the workbench hash, the nav link name (`Overview`, `Resources`, `Workloads`, `Status` inside `nav[aria-label="Workbench views"]` at ≥768px), `aria-label`s, and `data-testid`s named in the feature files. The desktop header connection control is an `output` named `Connection status: Live`.
+Stable handles are the workbench hash, the nav link name (`Overview`, `Resources`, `Workloads`, `Status` inside `nav[aria-label="Workbench views"]` at ≥768px), `aria-label`s, and `data-testid`s named in the feature files. On this fixture the desktop header connection control is an `output` named `Connection status: Degraded`: the snapshot stream is up, and one `plugin_stale` diagnostic on the builtin `hardware` plugin is active because its `workload-measurements` observation is `unavailable`. `/healthz` can still be `ok`.
 
 ## Evidence
 

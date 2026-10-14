@@ -92,11 +92,16 @@ async function driveOverview(page, state) {
   const actions = [];
   await page.goto(`${state.BASE_URL}/#overview`, { waitUntil: 'domcontentloaded' });
   await page.getByRole('heading', { name: 'Overview', level: 1 }).waitFor({ timeout: 20_000 });
-  await page.getByRole('status', { name: 'Connection status: Live' }).waitFor({ timeout: 20_000 });
-  actions.push({ action: 'open', url: page.url(), result: 'Overview heading visible and connection Live' });
+  await page.getByRole('status', { name: 'Connection status: Degraded' }).waitFor({ timeout: 20_000 });
+  await page.getByText('1 active provider diagnostic.').waitFor();
+  actions.push({
+    action: 'open',
+    url: page.url(),
+    result: 'Overview heading visible, connection Degraded, one provider diagnostic',
+  });
 
-  const version = await (await page.request.get('/api/v1/version')).json();
-  const snapshot = await (await page.request.get('/api/v1/snapshot')).json();
+  const version = await (await page.request.get(`${state.BASE_URL}/api/v1/version`)).json();
+  const snapshot = await (await page.request.get(`${state.BASE_URL}/api/v1/snapshot`)).json();
   const hostname = snapshot.host.hostname;
   await page.locator('header').getByText(hostname, { exact: true }).waitFor();
   await page.getByText(`Leviathan ${formatBuildVersion(version.version)}`).first().waitFor();
@@ -110,8 +115,13 @@ async function driveOverview(page, state) {
   }
   if (!ramText.includes('128.0 GiB')) fail(`RAM capacity card mismatch:\n${ramText}`);
   if (!storageText.includes('2.5 TiB')) fail(`Storage capacity card mismatch:\n${storageText}`);
-  if (!gpuText.includes('Workspace attribution is not configured')) {
-    fail(`GPU capacity card did not report the unconfigured attribution state:\n${gpuText}`);
+  if (!gpuText.includes('Assignment or GPU discovery is incomplete') || !gpuText.includes('Incomplete')) {
+    fail(`GPU capacity card did not report incomplete assignment discovery:\n${gpuText}`);
+  }
+  const diagnostics = snapshot.diagnostics ?? [];
+  const stale = diagnostics.filter((item) => item.code === 'plugin_stale' && item.component === 'hardware');
+  if (diagnostics.length !== 1 || stale.length !== 1 || stale[0].summary !== 'Source observation is unavailable or stale') {
+    fail(`fixture diagnostics were not the single hardware plugin_stale warning: ${JSON.stringify(diagnostics)}`);
   }
   for (const id of ['host-cpu-chart', 'host-ram-chart', 'host-storage-chart', 'utilization-chart']) {
     await page.getByTestId(id).waitFor({ state: 'visible', timeout: 20_000 });
@@ -126,7 +136,7 @@ async function driveOverview(page, state) {
   await page.screenshot({ path: path.join(state.EVIDENCE_DIR, 'overview-before.png'), fullPage: true });
 
   const chartWindow = page.getByRole('radiogroup', { name: 'Chart window' });
-  if (!(await chartWindow.getByRole('radio', { name: '30m' }).isChecked())) {
+  if (!(await chartWindow.getByRole('radio', { name: '30m', exact: true }).isChecked())) {
     fail('Chart window did not open on the 30m preset');
   }
   const historyPromise = page.waitForRequest((request) => {
@@ -143,7 +153,7 @@ async function driveOverview(page, state) {
   if (!historyResponse || historyResponse.status() !== 200) {
     fail(`aligned history POST for 5m returned ${historyResponse ? historyResponse.status() : 'no response'}`);
   }
-  if (!(await chartWindow.getByRole('radio', { name: '5m' }).isChecked())) {
+  if (!(await chartWindow.getByRole('radio', { name: '5m', exact: true }).isChecked())) {
     fail('5m chart window radio was not checked after the click');
   }
   const storedWindow = await page.evaluate(() => localStorage.getItem('leviathan.chartWindow.v1'));
@@ -200,6 +210,7 @@ async function driveOverview(page, state) {
       logicalProcessors: snapshot.system.cpu.logicalProcessors,
       gpuCount: snapshot.gpus.length,
       gpuName: snapshot.gpus[0]?.name ?? '',
+      diagnostics: snapshot.diagnostics ?? [],
     },
     version,
     screenshots: ['overview-before.png', 'overview-5m.png', 'overview-cpu-resources.png'],

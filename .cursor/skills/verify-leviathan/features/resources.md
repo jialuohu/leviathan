@@ -27,7 +27,8 @@ Record the capacity response status and the detail open/close in the evidence JS
 
 ## Gotchas
 
-- Live GPU capacity is unavailable until a capacity plugin is configured. The panel copy comes from `GET /api/v1/gpu-capacity`. An em dash is the unavailable count; it is not zero free GPUs. Treating the dash as a failed journey hides the real empty state. If a capacity plugin is configured and the panel stays `unavailable`, that journey fails — record the response body in Gotchas rather than skipping the refresh.
+- The fixture header stays `Degraded` on this view because of the Overview `plugin_stale` diagnostic. The ribbon is not a failed motherboard. The board journey still requires the motherboard region, the capacity panel, and a GPU detail dialog.
+- Live GPU capacity is unavailable until a capacity plugin is configured. The builtin fake plugin does not provide `gpu-capacity`. The panel copy comes from `GET /api/v1/gpu-capacity`. An em dash is the unavailable count; it is not zero free GPUs. If a capacity plugin is configured and the panel stays `unavailable`, that journey fails. Record the response body rather than skipping the refresh.
 - Headless Chrome often has no WebGL. `3D unavailable` with working detail buttons is success for this harness. A blank board with no `Open GPU … details` button is a failure.
 - Camera drag and particle motion are decorative. Do not use pixel diffs of the WebGL canvas as the proof.
 - Overview's CPU card and this view share one navigation path. When both change, run the Overview journey as well as this one.
