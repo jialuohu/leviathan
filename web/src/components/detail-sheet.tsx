@@ -504,7 +504,7 @@ function ActivityHistoryPlot({
                   label={tooltip.label}
                   payload={tooltip.payload}
                   testId="detail-activity-tooltip"
-                  valueFormatter={formatRoundedPercent}
+                  valueFormatter={formatPercent}
                 />
               )}
             />
@@ -1152,7 +1152,7 @@ export default function DetailSheet({
                   rows={chartData}
                   selectedRow={activitySelection.selectedRow}
                   unit="%"
-                  format={formatRoundedPercent}
+                  format={formatPercent}
                 />
                 <figure
                   {...activitySelection.plotProps}
@@ -1217,7 +1217,7 @@ export default function DetailSheet({
                   summary={chartMetrics
                     .map(
                       ({ key, label }) =>
-                        `${label}: ${activitySelection.selectedRow?.[key] == null ? 'Unavailable' : formatRoundedPercent(Number(activitySelection.selectedRow[key]))}`,
+                        `${label}: ${activitySelection.selectedRow?.[key] == null ? 'Unavailable' : formatPercent(Number(activitySelection.selectedRow[key]))}`,
                     )
                     .join(', ')}
                 />

@@ -47,9 +47,16 @@ describe('assigned telemetry tooltip', () => {
 
     const tooltip = screen.getByTestId('assigned-telemetry-tooltip');
     expect(tooltip).toHaveTextContent('GPU 0');
-    expect(tooltip).toHaveTextContent('20%');
+    expect(screen.getByText('20.0%', { exact: true })).toBeInTheDocument();
     expect(tooltip).not.toHaveTextContent(
       /Trend|Latest|min|max|sample|bucket/i,
     );
+  });
+
+  it('keeps a fractional percent instead of rounding it to a whole number', () => {
+    render(<TooltipHarness row={{ time: 1_000, assigned_0_activity: 12.6 }} />);
+
+    expect(screen.getByText('12.6%', { exact: true })).toBeInTheDocument();
+    expect(screen.queryByText('13%', { exact: true })).not.toBeInTheDocument();
   });
 });

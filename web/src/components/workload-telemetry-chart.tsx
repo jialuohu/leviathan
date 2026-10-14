@@ -27,7 +27,11 @@ import {
 } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { buildTrendRows, trendTimeDomain } from '../chart-trend';
-import { formatBytesPerSecond, formatRoundedPercent } from '../lib';
+import {
+  formatBytesPerSecond,
+  formatPercent,
+  formatRoundedPercent,
+} from '../lib';
 import type { ChartRow, LoadAlignedHistory } from '../overview-history';
 import { useChartTooltips } from '../use-chart-tooltips';
 import {
@@ -194,7 +198,7 @@ function sharedHistoryRequest(
 function valueFormatter(unit: TelemetryUnit, value: number): string {
   return unit === 'bytes_per_second'
     ? formatBytesPerSecond(value)
-    : formatRoundedPercent(value);
+    : formatPercent(value);
 }
 
 export function AssignedTelemetryTooltip({
@@ -387,7 +391,7 @@ const AssignedTelemetryPlot = memo(function AssignedTelemetryPlot({
               tickFormatter={(value: number) =>
                 throughput
                   ? formatAxisByteRate(value)
-                  : valueFormatter(unit, Number(value))
+                  : formatRoundedPercent(Number(value))
               }
               tick={
                 throughput && axis.compactRates ? (
