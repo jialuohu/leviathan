@@ -1,0 +1,5 @@
+ts	phase	decision	why	evidence	result
+2026-10-14T17:57:17Z	frame	Four read-only cloud slices, then one fix, then a confirmation swarm	The request covers code, behavior, performance, and UI. Four writers on one tree would collide, and a broad rewrite does not earn its place. Smallest proved change only.	HEAD 94197b9 main	open
+2026-10-14T17:57:17Z	frame	Worker model is grok-4.7-xhigh-fast	The swarm workers line in pstack-models.mdc is missing, so the swarm skill default applies.	missing ~/.cursor/rules/pstack-models.mdc	open
+2026-10-14T17:57:17Z	frame	Confirmation rule is rank all, N=3, identical brief	A win needs two passing checks that name the fix SHA and the method, and zero proved regressions. A result that omits the SHA or method does not count.	swarm skill selection rules	open
+2026-10-14T17:57:42Z	fanout	Launched four read-only cloud workers	Each worker owns one slice and returns ranked candidates. They do not edit, so the later fix has one writer.	bc-bf591410-a5f4-5202-b8f2-f941099d4e19 code, bc-16280c9f-d3cd-51cd-9157-ac0d5abac1e6 functionality, bc-baa472a8-18bb-5c51-91d7-43e170474e85 performance, bc-f5bfaf55-7dd5-5a5d-a170-8905f21d38fe UI	open
