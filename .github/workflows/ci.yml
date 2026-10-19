@@ -112,8 +112,8 @@ jobs:
           - chromium-desktop-light
           - chromium-narrow-dark
           - chromium-narrow-light
-    # Separate Brokkr services run the four browser projects concurrently.
-    runs-on: ${{ vars.BROKKR_ENABLED == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && fromJSON('["self-hosted","linux","x64","brokkr"]') || 'ubuntu-24.04' }}
+    # Four GitHub-hosted runners run the browser projects concurrently.
+    runs-on: ubuntu-24.04
     # The full desktop suite takes about 27 minutes with software graphics.
     # Leave room for cold runner setup and retaining failure artifacts.
     timeout-minutes: 45
